@@ -29,7 +29,8 @@ const perfumes = mongoose.model('perfumes', {
     category: String,
     series: String,
     url: String,
-    url1: String
+    url1: String,
+    discount:Number
 })
 const carts = mongoose.model('carts', {
     //schema creation
@@ -39,10 +40,27 @@ const carts = mongoose.model('carts', {
     totalprice:Number,
     url:String,
     username: String,
-    number: Number
+    number: Number,
+    discount:Number,
+    disprice:Number
 })
+const contacts=mongoose.model('contacts',{
+     //schema creation
+     name: String,
+     email: String,
+     phonenumber: String,
+     message:String,
+})
+
+const emails=mongoose.model('emails',{
+     //schema creation
+     email: String
+})
+
 module.exports = {
     users,
     perfumes,
-    carts
+    carts,
+    contacts,
+    emails
 }

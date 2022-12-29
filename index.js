@@ -84,7 +84,7 @@ app.post('/getPerfumes', (req, res) => {
 })
 
 app.post('/addtoCart', (req, res) => {
-    result = dataService.addtoCart(req.body.pid,req.body.pname,req.body.price,req.body.url,req.body.number, req.body.username)
+    result = dataService.addtoCart(req.body.pid,req.body.pname,req.body.price,req.body.url,req.body.number, req.body.username, req.body.discount)
         .then(result => {
             res.status(result.statusCode).json(result)
         })
@@ -99,6 +99,34 @@ app.post('/getCart', (req, res) => {
 
 app.delete('/removeItem/:productid/:username', (req, res) => {
     result = dataService.removeItem(req.params.productid,req.params.username)
+        .then(result => {
+            res.status(result.statusCode).json(result)
+        })
+})
+
+app.post('/getPerfumedetail', (req, res) => {
+    dataService.getPerfumedetail(req.body.productid)
+        .then(result => {
+            res.status(result.statusCode).json(result)
+        })
+})
+
+app.post('/saveMessage', (req, res) => {
+    result = dataService.saveMessage(req.body.name,req.body.email,req.body.phonenumber,req.body.message)
+        .then(result => {
+            res.status(result.statusCode).json(result)
+        })
+})
+
+app.post('/saveEmail', (req, res) => {
+    result = dataService.saveEmail(req.body.email)
+        .then(result => {
+            res.status(result.statusCode).json(result)
+        })
+})
+
+app.post('/getRandom', (req, res) => {
+    dataService.getRandom()
         .then(result => {
             res.status(result.statusCode).json(result)
         })

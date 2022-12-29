@@ -139,12 +139,13 @@ const getPerfumes = (category) => {
     }
 }
 
-const addtoCart = (pid, pname, price,url,number, username) => {
+const addtoCart = (pid, pname, price,url,number, username,discount) => {
     return db.carts.findOne({ username, productid:pid })
         .then(carts => {
             if (carts) {
                 carts.number += number
-                carts.totalprice+=(carts.price*number)
+                carts.disprice=carts.price-carts.discount
+                carts.totalprice+=(carts.disprice*number)
                 carts.save()
             }
             else {
@@ -152,10 +153,12 @@ const addtoCart = (pid, pname, price,url,number, username) => {
                     productid: pid,
                     pname,
                     price,
-                    totalprice:price,
+                    totalprice:((price-discount)*number),
                     url,
                     username,
-                    number
+                    number,
+                    discount,
+                    disprice:(price-discount)
                 })
                 newCart.save();
             }
@@ -175,7 +178,7 @@ const getCart=(username)=>{
             return {
                 statusCode: 200,
                 status: true,
-                carts
+                carts,
             }
         }
         else {
@@ -208,6 +211,88 @@ const removeItem=(productid,username)=>{
     })
 }
 
+const getPerfumedetail=(productid)=>{
+    return db.perfumes.findOne({productid})
+    .then(perfumes => {
+        if (perfumes) {
+
+            return {
+                statusCode: 200,
+                status: true,
+                perfumes
+            }
+        }
+        else {
+            return {
+                statusCode: 401,
+                status: false,
+                message: 'No items available'
+            }
+        }
+    })
+}
+
+const saveMessage=(name, email, phonenumber, message)=>{
+    return db.contacts.insertMany({name, email, phonenumber, message})
+    .then(contacts => {
+        if (contacts) {
+            return {
+                statusCode: 200,
+                status: true,
+                message:"Thank you for your contact"
+            }
+        }
+        else {
+            return {
+                statusCode: 401,
+                status: false,
+                message: 'Something went wrong'
+            }
+        }
+    })
+}
+
+const saveEmail=(email)=>{
+    return db.emails.insertMany({email})
+    .then(emails => {
+        if (emails) {
+            return {
+                statusCode: 200,
+                status: true,
+                message:"Thank you for folloying us!"
+            }
+        }
+        else {
+            return {
+                statusCode: 401,
+                status: false,
+                message: 'Something went wrong'
+            }
+        }
+    })
+}
+
+const getRandom=()=>{
+    return db.perfumes.aggregate([{$sample:{size:3}}])
+    .then(perfumes => {
+        if (perfumes) {
+
+            return {
+                statusCode: 200,
+                status: true,
+                perfumes
+            }
+        }
+        else {
+            return {
+                statusCode: 401,
+                status: false,
+                message: 'No items available'
+            }
+        }
+    })
+}
+
 module.exports = {
     register,
     login,
@@ -215,5 +300,9 @@ module.exports = {
     getPerfumes,
     addtoCart,
     getCart,
-    removeItem
+    removeItem,
+    getPerfumedetail,
+    saveMessage,
+    saveEmail,
+    getRandom
 }
